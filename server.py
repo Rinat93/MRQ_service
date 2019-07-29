@@ -24,31 +24,33 @@ class EchoServer(asyncore.dispatcher):
 
 
 
-@Microservise
-async def a(*args,**kwargs):
-    print(1)
-    log.log(**kwargs)
+# @Microservise
+# async def a(*args,**kwargs):
+#     print(1)
+#     log.log(**kwargs)
+#
+# @Microservise(route='api')
+# async def asa(*args,**kwargs):
+#     print(0)
+#     log.log(**kwargs)
 
 @Microservise(route='api')
-async def asa(*args,**kwargs):
-    print(0)
-    log.log(**kwargs)
+def callback(ch, method, properties, body):
+    print(" [x] Received %r" % body)
+    print(ch)
+    log.log(body=body,file='log.txt')
+    print(properties)
+    ch.basic_ack(delivery_tag = method.delivery_tag)
 
-# def callback(ch, method, properties, body):
-#     print(" [x] Received %r" % body)
-#     print(ch)
-#     print(method)
-#     print(properties)
-#     ch.basic_ack(delivery_tag = method.delivery_tag)
-
-async def run_all():
-    a(name="Хай")
-    asa(name="Хай 2")
+# async def run_all():
+#     a(name="Хай")
+#     asa(name="Хай 2")
 
 if __name__ == "__main__":
-    print(a())
-    # server = EchoServer('localhost', 8080)
-    # asyncore.loop()
+    # print(a())
+    print("Буууу")
+    server = EchoServer('localhost', 8080)
+    asyncore.loop()
     # asyncio.run(run_all())
     # asyncio.run(Servers.RunGateway())
     # asyncio.run(a(name="Хай"))

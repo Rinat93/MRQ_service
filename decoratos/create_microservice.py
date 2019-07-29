@@ -29,5 +29,8 @@ class Microservise(object):
             funct = self.func
         else:
             raise Exception("Not decorator")
-        
-        asyncio.run(self.create_microservice(funct,self.route))
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        loop.run_until_complete(asyncio.wait([self.create_microservice(funct,self.route)]))
+        loop.close()
+        # asyncio.run(self.create_microservice(funct,self.route))

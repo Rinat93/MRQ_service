@@ -28,6 +28,7 @@ class MicroRq(object):
         @param queue - имя очереди
     '''
     async def subscribe(self,exchange,callback,routing_key='',exchange_type='fanout',queue=''):
+        print("Сука я тута")
         self.channel.exchange_declare(exchange=exchange, exchange_type=exchange_type)
         # self.callback = []
         result = self.channel.queue_declare(queue=queue, exclusive=True)
@@ -38,7 +39,7 @@ class MicroRq(object):
         else:
             self.channel.queue_bind(exchange=exchange, queue=queue_name,routing_key=routing_key)
         self.channel.basic_consume(queue=queue_name, auto_ack=False,on_message_callback=callback)
-        await self.channel.start_consuming()
+        self.channel.start_consuming()
 
 
     '''
