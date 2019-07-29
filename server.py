@@ -29,10 +29,10 @@ class EchoServer(asyncore.dispatcher):
 #     print(1)
 #     log.log(**kwargs)
 #
-# @Microservise(route='api')
-# async def asa(*args,**kwargs):
-#     print(0)
-#     log.log(**kwargs)
+@Microservise(route='api2')
+async def asa(*args,**kwargs):
+    print(0)
+    log.log(**kwargs)
 
 @Microservise(route='api')
 def callback(ch, method, properties, body):
@@ -48,7 +48,6 @@ def callback(ch, method, properties, body):
 
 if __name__ == "__main__":
     # print(a())
-    print("Буууу")
     server = EchoServer('localhost', 8080)
     asyncore.loop()
     # asyncio.run(run_all())

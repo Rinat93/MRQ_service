@@ -1,13 +1,14 @@
 import log
-from core import MicroRq
+from core.core_async import MicroRq
 from settings.config import *
 import asyncio
 
-Servers = MicroRq(settings['server'])
-Exchange = settings['exchange']
+micro = MicroRq(settings['server'],settings['exchange'])
+# Servers = MicroRq(settings['server'])
+# Exchange = settings['exchange']
 
 class Microservise(object):
-    
+
     def __init__(self,*args,**kwargs):
         if len(args)>0:
             self.func = args[0]
@@ -15,7 +16,9 @@ class Microservise(object):
 
     async def create_microservice(self,func,route):
         print(func.__name__)
-        await Servers.subscribe(Exchange,func,routing_key=route or func.__name__,exchange_type='direct')
+        print(route)
+        micro.run(func,route or func.__name__,'')
+        # await micro.subscribe(Exchange,func,routing_key=route or func.__name__,exchange_type='direct')
 
     def __call__(self,*args,**kwargs):
         funct = None
@@ -29,8 +32,8 @@ class Microservise(object):
             funct = self.func
         else:
             raise Exception("Not decorator")
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-        loop.run_until_complete(asyncio.wait([self.create_microservice(funct,self.route)]))
-        loop.close()
-        # asyncio.run(self.create_microservice(funct,self.route))
+        # loop = asyncio.new_event_loop()
+        # asyncio.set_event_loop(loop)
+        # loop.run_until_complete(asyncio.wait([self.create_microservice(funct,self.route)]))
+        # loop.close()
+        asyncio.run(self.create_microservice(funct,self.route))

@@ -7,7 +7,7 @@ class Settings(object):
     @staticmethod
     def init():
         settings = {
-            'server': 'localhost',
+            'server': 'amqp://guest:guest@localhost:5672/%2F',
             'exchange': 'logs'
         }
         return settings
