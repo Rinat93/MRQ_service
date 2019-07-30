@@ -2,6 +2,7 @@ import functools
 import logging
 import time
 import pika
+from .driver_mrq import MRQdriver
 '''
     queue - имя очереди
     exchange_type - [topic,direct,fanout]
@@ -12,7 +13,7 @@ import pika
 LOG_FORMAT = ('%(levelname) -10s %(asctime)s %(name) -30s %(funcName) '
               '-35s %(lineno) -5d: %(message)s')
 LOGGER = logging.getLogger(__name__)
-# logging.basicConfig(level=logging.DEBUG, format=LOG_FORMAT)
+logging.basicConfig(level=logging.DEBUG, format=LOG_FORMAT,filename='log/log_mrq.log')
 
 class MicroRq(object):
     EXCHANGE = 'message'
@@ -44,7 +45,7 @@ class MicroRq(object):
         :return:
         """
         LOGGER.info('Connecting to %s', self._url)
-        return pika.SelectConnection(
+        return MRQdriver(
             parameters=pika.URLParameters(self._url),
             on_open_callback=self.on_connection_open,
             on_open_error_callback=self.on_connection_open_error,
@@ -128,6 +129,7 @@ class MicroRq(object):
         """Когда канал будет открыть произойдет настройка обмена сообщениями
         :param str|unicode exchange_name: Название обмена
         """
+
         LOGGER.info('Declaring exchange: %s', exchange_name)
         # Note: using functools.partial is not required, it is demonstrating
         # how arbitrary data can be passed to the callback when it is called
@@ -171,6 +173,7 @@ class MicroRq(object):
             callback=cb)
 
     def on_bindok(self, _unused_frame, userdata):
+
         """Вызывается pika после завершения метода Queue.Bind. В этот
         Точка мы будем устанавливать количество предварительной выборки для канала.
         :param pika.frame.Method _unused_frame: The Queue.BindOk response frame
