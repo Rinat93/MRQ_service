@@ -24,22 +24,22 @@ class EchoServer(asyncore.dispatcher):
 
 
 
-# @Microservise
-# async def a(*args,**kwargs):
-#     print(1)
-#     log.log(**kwargs)
+@Microservise()
+def rests(ch, method, properties, body):
+    print(1)
+    log.log(body=body,file='rests.txt')
+    ch.basic_ack(delivery_tag = method.delivery_tag)
 #
 @Microservise(route='api2')
-async def asa(*args,**kwargs):
+def asa(ch, method, properties, body):
     print(0)
-    log.log(**kwargs)
+    log.log(body=body,file='api2.txt')
+    ch.basic_ack(delivery_tag=method.delivery_tag)
 
 @Microservise(route='api')
 def callback(ch, method, properties, body):
-    print(" [x] Received %r" % body)
-    print(ch)
-    log.log(body=body,file='log.txt')
     print(properties)
+    log.log(body=body,file='api.txt')
     ch.basic_ack(delivery_tag = method.delivery_tag)
 
 # async def run_all():
@@ -47,12 +47,5 @@ def callback(ch, method, properties, body):
 #     asa(name="Хай 2")
 
 if __name__ == "__main__":
-    # print(a())
     server = EchoServer('localhost', 8080)
     asyncore.loop()
-    # asyncio.run(run_all())
-    # asyncio.run(Servers.RunGateway())
-    # asyncio.run(a(name="Хай"))
-    # asyncio.run(asa(name="Хай 2"))
-    ## MicroRq('localhost').create_channels('task_queue',callback)
-    #MicroRq('localhost').subscribe('logs',callback,routing_key=['users.*','admin.*'],exchange_type='topic')

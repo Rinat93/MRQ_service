@@ -11,7 +11,7 @@ import pika
 class MicroRq(object):
     
     def __init__(self,hosts):
-        self.connection = pika.BlockingConnection(pika.ConnectionParameters(hosts))
+        self.connection = pika.BlockingConnection(pika.URLParameters(hosts))
         self.channel = self.connection.channel()
 
     def create_channels(self,queue,callback,auto_ack=False):
