@@ -2,6 +2,7 @@ import functools
 import logging
 import time
 import pika
+import os
 from .driver_mrq import MRQdriver
 '''
     queue - имя очереди
@@ -13,7 +14,9 @@ from .driver_mrq import MRQdriver
 LOG_FORMAT = ('%(levelname) -10s %(asctime)s %(name) -30s %(funcName) '
               '-35s %(lineno) -5d: %(message)s')
 LOGGER = logging.getLogger(__name__)
-logging.basicConfig(level=logging.DEBUG, format=LOG_FORMAT,filename='log/log_mrq.log')
+
+if os.environ.get('debug',False):
+    logging.basicConfig(level=logging.DEBUG, format=LOG_FORMAT,filename='log/log_mrq.log')
 
 class MicroRq(object):
     EXCHANGE = 'message'

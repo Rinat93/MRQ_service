@@ -12,9 +12,10 @@ def rests(ch, method, properties, body):
 #
 @Microservise(route='api2')
 def asa(ch, method, properties, body):
-    print(0)
     log.log(body=body,file='api2.txt')
     ch.basic_ack(delivery_tag=method.delivery_tag)
+    ch.basic_consume()
+    return 'Ну привет друг'
 
 @Microservise(route='api')
 def callback(ch, method, properties, body):

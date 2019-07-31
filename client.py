@@ -1,5 +1,5 @@
 import pika
-from core import BlocRq
+from core import BlocRq,MicroRq
 from settings.config import *
 Client = BlocRq(settings['server'])
 
