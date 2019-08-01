@@ -1,0 +1,31 @@
+Metadata-Version: 2.1
+Name: MRQservice
+Version: 1.1.0
+Summary: MRQservice - create micro-services
+Home-page: https://
+Maintainer: Zakirjanov Rinat M.
+Maintainer-email: rinat643@gmail.com
+License: BSD
+Description: UNKNOWN
+Platform: UNKNOWN
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Natural Language :: English
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 2
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.4
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: Implementation :: CPython
+Classifier: Programming Language :: Python :: Implementation :: Jython
+Classifier: Programming Language :: Python :: Implementation :: PyPy
+Classifier: Topic :: Communications
+Classifier: Topic :: Internet
+Classifier: Topic :: Software Development :: Libraries
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: System :: Networking
+Provides-Extra: pika
