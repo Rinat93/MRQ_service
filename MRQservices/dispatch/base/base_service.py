@@ -56,6 +56,7 @@ class ServiceMeta(type):
 
     def __systems_all(cls,ch, method, properties, body):
         body = json.loads(body)
+        print(body)
         if body['KEY'] == "Q523_Ma":
             ch.basic_ack(delivery_tag=method.delivery_tag)
         else:
