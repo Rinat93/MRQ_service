@@ -3,7 +3,10 @@
 from settings.config import settings
 from core import MicroRq,BlocRq
 from threading import Thread
-
+import logging
+LOG_FORMAT = ('%(levelname) -10s %(asctime)s %(name) -30s %(funcName) '
+              '-35s %(lineno) -5d: %(message)s')
+LOGGER = logging.getLogger(__name__)
 '''
     cls - объект который наследуется от данного класса либо класса который является
         прям наследником данного мета класса
@@ -19,6 +22,8 @@ class ServiceMeta(type):
     __service__ = None
     hosts = settings['server']
     exchange = settings['exchange']
+    # Что-бы предотвратить повторный запуск экземпелятров сервисов - указываем состояние
+    service_start = False
 
     def __new__(cls, name, bases, nmspc):
         # должно быть имя сервиса и его контекст(callback)
@@ -36,14 +41,18 @@ class ServiceMeta(type):
 
     # Регистрация сервисов
     def __register_service__(cls):
-        if hasattr(cls,'service'):
-            print(cls)
-            Thread(target=MicroRq(cls.hosts, cls.exchange).run, args=(cls.context,cls.service,'')).start()
-
+        if hasattr(cls,'service') and cls.service_start == False:
+            cls.service_start = True
+            Thread(target=MicroRq(cls.hosts, cls.exchange).run, args=(cls().context,cls.service,'')).start()
 
 
     def __init__(cls, *args,**kwargs):
-
+        '''
+            Регистрируем все сервисы при старте приложения, регистрируем только те у кого есть
+            аттрибут service.
+        :param args:
+        :param kwargs:
+        '''
         if not hasattr(cls, 'registry'):
             cls.registry = set()
 
@@ -54,7 +63,7 @@ class ServiceMeta(type):
 
     def __call__(self, *args, **kwargs):
         self.__register_service__()
-        super().__call__(*args,**kwargs)
+        return super(ServiceMeta,self).__call__(*args,**kwargs)
 
     def context(cls):pass
 
@@ -71,4 +80,7 @@ class ServiceBase(metaclass=ServiceMeta):
     def __init__(cls,*args,**kwargs):
         super(ServiceBase, cls).__init__(*args,**kwargs)
 
-    def context(self):pass
+    def context(self,ch, method, properties, body):pass
+
+
+

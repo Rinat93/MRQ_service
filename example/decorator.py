@@ -1,12 +1,11 @@
 from decoratos.create_microservice import log,Microservise
-import asyncio
-import asyncore
+# import asyncio
+# import asyncore
 
 
 
 @Microservise()
 def rests(ch, method, properties, body):
-    print(1)
     log.log(body=body,file='rests.txt')
     ch.basic_ack(delivery_tag = method.delivery_tag)
 #
