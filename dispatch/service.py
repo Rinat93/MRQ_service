@@ -1,6 +1,6 @@
 import json
 import re
-from dispatch.base.base_service import ServiceBase,logging
+from dispatch.base.base_service import ServiceBase
 
 class CreateService(ServiceBase):
     __run__ = False
@@ -16,11 +16,6 @@ class CreateService(ServiceBase):
             body = json.loads(body)
         ch.basic_ack(delivery_tag=method.delivery_tag)
         return body
-
-
-    # Сериализация json данных
-    def json_serialize(self,body):
-        return re.search(r"^{.*}|^\[.*\]",body)
 
     # Стартуем приложение запуская экземпляры всех зарегистрированных сервисов
     def run(cls):

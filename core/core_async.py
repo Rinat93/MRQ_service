@@ -236,7 +236,7 @@ class MicroRq(object):
                     method_frame)
         if self._channel:
             self._channel.close()
-
+    
     # def on_message(self, _unused_channel, basic_deliver, properties, body):
     #     """
     #     Вызывается pika при доставке сообщения из RabbitMQ.

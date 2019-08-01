@@ -1,9 +1,13 @@
 # import log
-# from core import MicroRq,BlocRq
+
+from core.core_client import SendMessages
 from settings.config import settings
-from core import MicroRq,BlocRq
+from core import MicroRq
 from threading import Thread
+import re
+import json
 import logging
+
 LOG_FORMAT = ('%(levelname) -10s %(asctime)s %(name) -30s %(funcName) '
               '-35s %(lineno) -5d: %(message)s')
 LOGGER = logging.getLogger(__name__)
@@ -22,7 +26,9 @@ class ServiceMeta(type):
     __service__ = None
     hosts = settings['server']
     exchange = settings['exchange']
+    __service_host = settings['service_host']
     # Что-бы предотвратить повторный запуск экземпелятров сервисов - указываем состояние
+    __global_service_start = False
     service_start = False
 
     def __new__(cls, name, bases, nmspc):
@@ -38,9 +44,31 @@ class ServiceMeta(type):
 
         return super(ServiceMeta, cls).__new__(cls, name, bases, nmspc)
 
+    def _send_message(cls):
+        MicroRq(cls.hosts, cls.exchange)
+
+
+    # Сериализация json данных
+    def json_serialize(self,body):
+        return re.search(r"^{.*}|^\[.*\]",body)
+
+    # Вывод всех сервисов(регистрирует новые сервисы)
+
+    def __systems_all(cls,ch, method, properties, body):
+        body = json.loads(body)
+        if body['KEY'] == "Q523_Ma":
+            ch.basic_ack(delivery_tag=method.delivery_tag)
+        else:
+            ch.basic_cancel(delivery_tag=method.delivery_tag)
+
 
     # Регистрация сервисов
     def __register_service__(cls):
+        if cls.__global_service_start  == False:
+            Thread(target=MicroRq(cls.hosts, cls.exchange).run, args=(cls.__systems_all, cls.__service_host, '')).start()
+            SendMessages(settings['server']).send(cls.__service_host,settings["REGISTER"], exchange='logs', exchange_type='topic')
+            cls.__global_service_start  = True
+
         if hasattr(cls,'service') and cls.service_start == False:
             cls.service_start = True
             Thread(target=MicroRq(cls.hosts, cls.exchange).run, args=(cls().context,cls.service,'')).start()
@@ -48,8 +76,8 @@ class ServiceMeta(type):
 
     def __init__(cls, *args,**kwargs):
         '''
-            Регистрируем все сервисы при старте приложения, регистрируем только те у кого есть
-            аттрибут service.
+        Регистрируем все сервисы при старте приложения, регистрируем только те у кого есть
+        аттрибут service.
         :param args:
         :param kwargs:
         '''
