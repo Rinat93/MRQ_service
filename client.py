@@ -4,7 +4,7 @@ from settings.config import *
 Client = BlocRq(settings['server'])
 
 BlocRq(settings['server']).send_queu('api2','asf',exchange='logs',exchange_type='topic')
-BlocRq(settings['server']).send_queu('api','1213asd',exchange='logs',exchange_type='topic')
+BlocRq(settings['server']).send_queu('api','[{"a":2}]',exchange='logs',exchange_type='topic')
 BlocRq(settings['server']).send_queu('rests','Uguguugu',exchange='logs',exchange_type='topic')
 
 # MicroRq('localhost').send_queu('users.mig','asd 2',exchange='logs',exchange_type='topic')
