@@ -1,4 +1,4 @@
-from core import MicroRq
+# from core import MicroRq
 import os
 
 settings = None #os.environ.get('MSQ_SETTINGS')
