@@ -1,6 +1,6 @@
 import json
 import re
-from dispatch.base.base_service import ServiceBase
+from MRQservices.dispatch.base.base_service import ServiceBase
 
 class CreateService(ServiceBase):
     __run__ = False

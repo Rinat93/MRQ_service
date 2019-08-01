@@ -1,8 +1,8 @@
 # import log
 
-from core.core_client import SendMessages
-from settings.config import settings
-from core import MicroRq
+from MRQservices.core.core_client import SendMessages
+from MRQservices.settings.config import settings
+from MRQservices.core import MicroRq
 from threading import Thread
 import re
 import json

@@ -1,6 +1,6 @@
-import log
-from core import MicroRq,BlocRq
-from settings.config import *
+import MRQservices.log as log
+from MRQservices.core import MicroRq,BlocRq
+from MRQservices.settings.config import *
 import asyncio
 from threading import Thread
 from functools import wraps

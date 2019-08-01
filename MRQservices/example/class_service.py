@@ -1,4 +1,4 @@
-from dispatch.service import CreateService,run
+from MRQservices.dispatch.service import CreateService,run
 
 class B(CreateService):
     service = 'api'
