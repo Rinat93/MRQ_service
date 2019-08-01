@@ -66,6 +66,7 @@ class ServiceMeta(type):
         return super(ServiceMeta, cls).__new__(cls, name, bases, nmspc)
 
     def send_message(cls,body,exchange):
+        print(body)
         SendMessages(cls.hosts).send(cls.__service_host,body, exchange=exchange, exchange_type='topic')
 
 
@@ -76,7 +77,7 @@ class ServiceMeta(type):
     # Вывод всех сервисов(регистрирует новые сервисы)
 
     def __systems_all(cls,ch, method, properties, body):
-        # cls.send_message("Я тута","api")
+        cls.send_message("Я тута","api")
         body = json.loads(body)
         print(body)
         if body['KEY'] == cls.__regisers__["KEY"]:
