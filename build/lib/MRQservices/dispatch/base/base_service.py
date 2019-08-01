@@ -1,5 +1,6 @@
 from .meta_service import *
 # Базовый класс реализирующий регистрацию роутеров
+ENVIRONMENT_VARIABLE = "SETTINGS_MODULE"
 class ServiceBase(metaclass=ServiceMeta):
     __settings = os.environ.get('SETTINGS_MODULE', None)
     __regisers__ = settings["REGISTER"]
@@ -12,11 +13,9 @@ class ServiceBase(metaclass=ServiceMeta):
     __service__ = 'system'
 
     def __new__(cls, *args, **kwargs):
-
         if cls.__settings:
             settings = importlib.import_module(cls.__settings)
             cls.settings_customs(cls,settings)
-
         return super().__new__(cls)
 
     def __init__(cls, *args, **kwargs):
@@ -28,15 +27,12 @@ class ServiceBase(metaclass=ServiceMeta):
         '''
 
         # Иниациализируем сервис и отправляем сообщение все сервисам
-        '''
-            ToDo: Каждый новый сервис имеет __global_service_start = False
-                Либо так и оставить, тем самым регистрировать каждый маршрут а не сервис 
-                либо придумать симофор...
-        '''
         if cls.__global_service_start == False:
+            print(1)
             Thread(target=MicroRq(cls.hosts, cls.exchange).run,
                    args=(cls.__systems_all, cls.__service_host, '')).start()
-            SendMessages(cls.hosts).send(cls.__service_host, cls.__regisers__, exchange=cls.exchange, exchange_type='topic')
+            SendMessages(cls.hosts).send(cls.__service_host, cls.__regisers__, exchange=cls.exchange,
+                                         exchange_type='topic')
             cls.__global_service_start = True
 
     def settings_customs(cls, settings):
