@@ -52,7 +52,8 @@ class ServiceBase(metaclass=ServiceMeta):
             cls.__regisers__['KEY'] = settings.SERVICE_KEY
 
     # Отправка сообщении в другие сервисы
-    def send_message(cls, body, route):
+    def send_message(cls, body, route,exchange=''):
+        print(f'SEND MESSAGE: {route} {body} {cls.exchange}')
         SendMessages(cls.hosts).send(route, body, exchange=cls.exchange, exchange_type='topic')
 
     # Сериализация json данных
@@ -62,23 +63,25 @@ class ServiceBase(metaclass=ServiceMeta):
     # Вывод всех сервисов(регистрирует новые сервисы в других сервисах)
     def __systems_all(cls, ch, method, properties, body):
         body = json.loads(body)
-        print("AUTH-----")
-        print(body)
-        print("AUTH.")
+        # print("AUTH-----")
+        # print(body)
+        # print("AUTH.")
         if body not in cls.register_servce_info:
             print(f"Зарегистрирован сервис: {body}")
             cls.send_message(cls.__regisers__, cls.__service_host)
-            if body['KEY'] == cls.__regisers__["KEY"]:
-                ch.basic_ack(delivery_tag=method.delivery_tag)
-            else:
-                ch.basic_cancel(delivery_tag=method.delivery_tag)
+            # if body['KEY'] == cls.__regisers__["KEY"]:
+            ch.basic_ack(delivery_tag=method.delivery_tag)
+            # else:
+            #     ch.basic_cancel(delivery_tag=method.delivery_tag)
             cls.register_servce_info.append(body)
         else:
             print("Уже зарегистрирован")
+            ch.basic_ack(delivery_tag=method.delivery_tag)
 
     # Создание каналов
     @staticmethod
     def _create_channels(hosts,exchange,callback,host_service,exh_type,queue=''):
+        # print(f'CREATE CHANNELS: {hosts} {exchange} {host_service} {queue}')
         Thread(target=MicroRq(hosts, exchange).run,
                args=(callback, host_service,queue),kwargs={'exh_type':exh_type}).start()
 

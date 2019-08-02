@@ -157,7 +157,7 @@ class MicroRq(object):
         """
         LOGGER.info('Declaring queue %s', queue_name)
         cb = functools.partial(self.on_queue_declareok, userdata=queue_name)
-        self._channel.queue_declare(queue=queue_name, callback=cb)
+        self._channel.queue_declare(queue=queue_name, callback=cb,durable=True)
 
     def on_queue_declareok(self, _unused_frame, userdata):
         """ В этом методе мы будем связывать очередь
