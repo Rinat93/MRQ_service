@@ -7,17 +7,21 @@ def loggigs_service(func):
 
     def writes(*args,**kwargs):
         services = json.loads(args[-1].decode('utf-8'))
-        data = [kwargs]
-        data.append(services)
+        obj = args[0]._regisers
+        data = set(services)
+        data.add(obj)
+        data = list(data)
         if not os.path.isdir('log'):
             os.makedirs('log')
 
-        if os.path.isfile(f'log/{services["SERVICE"]}'):
-            with open(f'log/{services["SERVICE"]}.json') as f:
+        if os.path.isfile(f'log/{obj["SERVICE"]}.json'):
+            with open(f'log/{obj["SERVICE"]}.json') as f:
                 data.extend(json.load(f))
 
-        with open(f'log/{services["SERVICE"]}.json','w+') as f:
+        with open(f'log/{obj["SERVICE"]}.json','w+') as f:
             # data = json.load(f)
-            json.dump(services,f)
+            json.dump(data,f)
+
+
         return func(*args,**kwargs)
     return writes

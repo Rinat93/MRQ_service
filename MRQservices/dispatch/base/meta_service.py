@@ -1,7 +1,7 @@
 # import log
 
 from MRQservices.core.core_client import SendMessages
-from MRQservices.settings.config import settings
+from MRQservices.settings.config import *
 from MRQservices.core import MicroRq
 from threading import Thread
 import importlib
@@ -55,12 +55,12 @@ class ServiceMeta(type):
 # Общий объект для объеденения некоторых методов которые присущи как слушателям так и отправителям
 class Service(metaclass=ServiceMeta):
     __service__ = 'meta'
-    hosts = settings['server']
-    exchange = settings['exchange']
+    hosts = RABBITMQ
+    exchange = EXCHANGE
     register_servce_info = []  # Зарегистрированные сервисы
     _settings = os.environ.get('SETTINGS_MODULE', None)
-    _regisers = settings["REGISTER"]
-    _service_host = settings['service_host']
+    _regisers = REGISTER
+    _service_host = SERVICE_HOST
     DEBUG = False
 
     def __new__(cls, *args, **kwargs):
@@ -95,6 +95,7 @@ class Service(metaclass=ServiceMeta):
 
     # Отправка сообщении в другие сервисы
     def send_message(cls, body, route, exchange=''):
+        print(body)
         SendMessages(cls.hosts).send(route, body, exchange=cls.exchange, exchange_type='topic')
 
     # Сериализация json данных

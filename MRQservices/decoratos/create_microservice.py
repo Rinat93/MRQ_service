@@ -6,7 +6,7 @@ from threading import Thread
 from functools import wraps
 # micro = MicroRq(settings['server'],settings['exchange'])
 # Servers = BlocRq(settings['server'])
-Exchange = settings['exchange']
+Exchange = EXCHANGE
 
 class Microservise(object):
 
@@ -16,8 +16,7 @@ class Microservise(object):
         self.route = kwargs.get('route')
 
     def create_microservice(self,func,route):
-        print(route or func.__name__)
-        MicroRq(settings['server'], settings['exchange']).run(func,route or func.__name__,'')
+        MicroRq(RABBITMQ, EXCHANGE).run(func,route or func.__name__,'')
         # BlocRq(settings['server']).subscribe(Exchange,func,routing_key=route or func.__name__,exchange_type='topic')
     #
 

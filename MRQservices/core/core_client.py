@@ -263,7 +263,7 @@ class SendMessages(object):
         self._deliveries.append(self._message_number)
         LOGGER.info('Published message # %i', self._message_number)
         # закрываем канал после того как отправили сообщение
-        self.stop()
+        # self.stop()
         # self.schedule_next_message()
 
     def send(self,route,body,exchange,exchange_type,queu='',headers={'delivery_mode': 2}):

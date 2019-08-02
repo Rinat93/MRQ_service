@@ -4,8 +4,8 @@ from MRQservices.decoratos.logs import loggigs_service
 # Объект слушателей
 class Consumer(Service):
     __service__ = 'consumer'
-    hosts = settings['server']
-    exchange = settings['exchange']
+    hosts = RABBITMQ
+    exchange = EXCHANGE
     type_exchange = None
     route = None
     queue = None
@@ -29,7 +29,7 @@ class Consumer(Service):
 
 
     # Вывод всех сервисов(регистрирует новые сервисы в других сервисах)
-    @loggigs_service
+    # @loggigs_service
     def _systems_all(cls, ch, method, properties, body):
         body = json.loads(body)
         if body not in cls.register_servce_info:

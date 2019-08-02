@@ -1,10 +1,10 @@
-from core.core_client import SendMessages
-from settings.config import *
-Client = SendMessages(settings['server'])
+from MRQservices.core.core_client import SendMessages
+from MRQservices.settings.config import *
+Client = SendMessages(RABBITMQ)
 
-SendMessages(settings['server']).send('api2','asf',exchange='logs',exchange_type='topic')
-SendMessages(settings['server']).send('api',{"a":2},exchange='logs',exchange_type='topic')
-SendMessages(settings['server']).send('rests','asf',exchange='logs',exchange_type='topic')
+SendMessages(RABBITMQ).send('api2','asf',exchange='logs',exchange_type='topic')
+SendMessages(RABBITMQ).send('api',{"a":2},exchange='logs',exchange_type='topic')
+SendMessages(RABBITMQ).send('rests','asf',exchange='logs',exchange_type='topic')
 
 
 # from core import BlocRq,MicroRq
