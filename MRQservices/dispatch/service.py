@@ -15,6 +15,7 @@ class CreateService(Publisher):
         body = body.decode('utf-8')
         if self.json_serialize(body):
             body = json.loads(body)
+
         ch.basic_ack(delivery_tag=method.delivery_tag)
         return body
 

@@ -15,6 +15,10 @@ setuptools.setup(
     maintainer_email='rinat643@gmail.com',
     url='https://',
     packages=setuptools.find_packages(include=['MRQservices','MRQservices.*']),
+    scripts=['MRQservices/bin/new_services.py'],
+    entry_points={'console_scripts': [
+        'new_services = MRQservices.core.management.new_services:BaseCommand',
+    ]},
     license='BSD',
     install_requires= open('./req.txt').read(),
     # package_data={'': ['LICENSE', 'README.rst']},
