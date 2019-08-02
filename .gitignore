@@ -4,4 +4,5 @@
 *.env
 dist
 build
+__pycache__
 MRQservice.egg-info
