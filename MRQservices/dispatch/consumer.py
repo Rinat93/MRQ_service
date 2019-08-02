@@ -1,6 +1,6 @@
 from .base.meta_service import *
 from threading import Thread
-
+from MRQservices.decoratos.logs import loggigs_service
 # Объект слушателей
 class Consumer(Service):
     __service__ = 'consumer'
@@ -29,6 +29,7 @@ class Consumer(Service):
 
 
     # Вывод всех сервисов(регистрирует новые сервисы в других сервисах)
+    @loggigs_service
     def _systems_all(cls, ch, method, properties, body):
         body = json.loads(body)
         if body not in cls.register_servce_info:

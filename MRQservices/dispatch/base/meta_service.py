@@ -95,7 +95,6 @@ class Service(metaclass=ServiceMeta):
 
     # Отправка сообщении в другие сервисы
     def send_message(cls, body, route, exchange=''):
-        print(cls.hosts)
         SendMessages(cls.hosts).send(route, body, exchange=cls.exchange, exchange_type='topic')
 
     # Сериализация json данных

@@ -1,18 +1,23 @@
 import os
 import json
+'''
+    Декоратор для логирования основы сервисов
+'''
 def loggigs_service(func):
 
     def writes(*args,**kwargs):
-        if os.path.isdir('log'):
-            data = [kwargs]
-            data.extend(args)
-            if os.path.isfile(f'log/{services}'):
-                with open(f'log/{services}.json') as f:
-                    data.extend(json.load(f))
+        services = json.loads(args[-1].decode('utf-8'))
+        data = [kwargs]
+        data.append(services)
+        if not os.path.isdir('log'):
+            os.makedirs('log')
 
-            with open(f'log/{services}.json','w+') as f:
-                # data = json.load(f)
-                json.dump(data,f)
-        else:
-            print("Нет папки log")
+        if os.path.isfile(f'log/{services["SERVICE"]}'):
+            with open(f'log/{services["SERVICE"]}.json') as f:
+                data.extend(json.load(f))
+
+        with open(f'log/{services["SERVICE"]}.json','w+') as f:
+            # data = json.load(f)
+            json.dump(services,f)
         return func(*args,**kwargs)
+    return writes
