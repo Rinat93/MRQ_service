@@ -1,0 +1,7 @@
+*.log
+*.txt
+*.pyc
+*.env
+dist
+build
+MRQservice.egg-info
