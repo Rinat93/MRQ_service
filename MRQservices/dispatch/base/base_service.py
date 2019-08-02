@@ -35,11 +35,7 @@ class ServiceBase(metaclass=ServiceMeta):
                 Либо так и оставить, тем самым регистрировать каждый маршрут а не сервис 
                 либо придумать симофор...
         '''
-        if cls.__global_service_start == False:
-            Thread(target=MicroRq(cls.hosts, cls.exchange).run,
-                   args=(cls.__systems_all, cls.__service_host, '')).start()
-            SendMessages(cls.hosts).send(cls.__service_host, cls.__regisers__, exchange=cls.exchange, exchange_type='topic')
-            cls.__global_service_start = True
+
 
 
     # Если есть enviromen SETTINGS_MODULE тогда кастомизируем настройки
@@ -57,7 +53,7 @@ class ServiceBase(metaclass=ServiceMeta):
 
     # Отправка сообщении в другие сервисы
     def send_message(cls, body, route):
-        cls.__messages__.send(route, body, exchange=cls.exchange, exchange_type='topic')
+        SendMessages(cls.hosts).send(route, body, exchange=cls.exchange, exchange_type='topic')
 
     # Сериализация json данных
     def json_serialize(self, body):
@@ -72,6 +68,13 @@ class ServiceBase(metaclass=ServiceMeta):
             ch.basic_ack(delivery_tag=method.delivery_tag)
         else:
             ch.basic_cancel(delivery_tag=method.delivery_tag)
+
+    def _send_register_Service(cls):
+        if cls.__global_service_start == False:
+            Thread(target=MicroRq(cls.hosts, cls.exchange).run,
+                   args=(cls.__systems_all, cls.__service_host, '')).start()
+            cls.send_message(cls.__regisers__,cls.__service_host)
+            cls.__global_service_start = True
 
     # Регистрация сервисов
     def __register_service__(cls, obj):

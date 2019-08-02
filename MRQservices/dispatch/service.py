@@ -20,6 +20,7 @@ class CreateService(ServiceBase):
 
     # Стартуем приложение запуская экземпляры всех зарегистрированных сервисов
     def run(cls):
+        cls._send_register_Service()
         if cls.__run__ == False:
             for obj in cls.registry:
                 obj()
