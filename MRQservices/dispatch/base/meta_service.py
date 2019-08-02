@@ -26,7 +26,6 @@ LOGGER = logging.getLogger(__name__)
 class ServiceMeta(type):
 
     def __new__(cls, name, bases, nmspc):
-        # Если есть enviromen SETTINGS_MODULE тогда кастомизируем настройки
         nmspc['__call__'] = cls.__call__
 
         # должно быть имя сервиса и его контекст(callback)
