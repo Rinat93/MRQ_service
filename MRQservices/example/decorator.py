@@ -18,7 +18,6 @@ def asa(ch, method, properties, body):
 
 @Microservise(route='api')
 def callback(ch, method, properties, body):
-    print(properties)
     log.log(body=body,file='api.txt')
     ch.basic_ack(delivery_tag = method.delivery_tag)
 

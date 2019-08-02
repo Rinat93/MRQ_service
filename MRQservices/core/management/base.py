@@ -1,7 +1,7 @@
 import os
 import argparse
 import importlib
-
+from setuptools import Command
 from MRQservices.core.core_client import SendMessages
 
 

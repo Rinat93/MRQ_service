@@ -15,9 +15,10 @@ setuptools.setup(
     maintainer_email='rinat643@gmail.com',
     url='https://',
     packages=setuptools.find_packages(include=['MRQservices','MRQservices.*']),
-    scripts=['MRQservices/bin/RMQ.py'],
+    scripts=['MRQservices/bin/RMQ.py',],
     entry_points={'console_scripts': [
         'rmq = MRQservices.core.management.base:BaseCommand',
+        'test = MRQservices.test.test_base:TestBase',
     ]},
     license='BSD',
     install_requires= open('./req.txt').read(),

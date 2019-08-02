@@ -15,8 +15,7 @@ class Publisher(Consumer):
     def _send_register_Service(cls):
         if cls.__global_service_start == False:
             cls._create_channels(cls.hosts,cls.exchange,cls._systems_all,cls._service_host,'topic')
-            cls.send_message(cls._regisers,cls._service_host)
-            print("Tut")
+            cls.send_message(cls._registers,cls._service_host)
             cls.__global_service_start = True
 
 

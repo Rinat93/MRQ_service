@@ -59,7 +59,7 @@ class Service(metaclass=ServiceMeta):
     exchange = EXCHANGE
     register_servce_info = []  # Зарегистрированные сервисы
     _settings = os.environ.get('SETTINGS_MODULE', None)
-    _regisers = REGISTER
+    _registers = REGISTER
     _service_host = SERVICE_HOST
     DEBUG = False
 
@@ -79,23 +79,23 @@ class Service(metaclass=ServiceMeta):
         if hasattr(settings, 'HOST_SERVICE'):
             cls.__service_host = settings.HOST_SERVICE
         if hasattr(settings, 'SERVICE_NAME'):
-            cls._regisers['SERVICE'] = settings.SERVICE_NAME
+            cls._registers['SERVICE'] = settings.SERVICE_NAME
         if hasattr(settings, 'SERVICE_KEY'):
-            cls._regisers['KEY'] = settings.SERVICE_KEY
+            cls._registers['KEY'] = settings.SERVICE_KEY
         if hasattr(settings, 'DEBUG'):
             cls.DEBUG = settings.DEBUG
 
         if cls.DEBUG:
             logging.basicConfig(level=logging.ERROR, format=LOG_FORMAT,
-                                filename='log/error_' + cls._regisers['SERVICE'] + '.log', filemode='w+')
+                                filename='log/error_' + cls._registers['SERVICE'] + '.log', filemode='w+')
             logging.basicConfig(level=logging.CRITICAL, format=LOG_FORMAT,
-                                filename='log/critical_' + cls._regisers['SERVICE'] + '.log', filemode='w+')
+                                filename='log/critical_' + cls._registers['SERVICE'] + '.log', filemode='w+')
             logging.basicConfig(level=logging.FATAL, format=LOG_FORMAT,
-                                filename='log/error_' + cls._regisers['SERVICE'] + '.log', filemode='w+')
+                                filename='log/error_' + cls._registers['SERVICE'] + '.log', filemode='w+')
 
     # Отправка сообщении в другие сервисы
     def send_message(cls, body, route, exchange=''):
-        print(body)
+        print(cls.exchange,route)
         SendMessages(cls.hosts).send(route, body, exchange=cls.exchange, exchange_type='topic')
 
     # Сериализация json данных

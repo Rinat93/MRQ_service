@@ -29,12 +29,12 @@ class Consumer(Service):
 
 
     # Вывод всех сервисов(регистрирует новые сервисы в других сервисах)
-    # @loggigs_service
+    @loggigs_service
     def _systems_all(cls, ch, method, properties, body):
         body = json.loads(body)
         if body not in cls.register_servce_info:
             print(f"Зарегистрирован сервис: {body}")
-            cls.send_message(cls._regisers, cls._service_host)
+            cls.send_message(cls._registers, cls._service_host)
             ch.basic_ack(delivery_tag=method.delivery_tag)
             # else:
             #     ch.basic_cancel(delivery_tag=method.delivery_tag)

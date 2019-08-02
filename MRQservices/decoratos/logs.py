@@ -7,10 +7,8 @@ def loggigs_service(func):
 
     def writes(*args,**kwargs):
         services = json.loads(args[-1].decode('utf-8'))
-        obj = args[0]._regisers
-        data = set(services)
-        data.add(obj)
-        data = list(data)
+        obj = args[0]._registers
+        data = [services,obj]
         if not os.path.isdir('log'):
             os.makedirs('log')
 
