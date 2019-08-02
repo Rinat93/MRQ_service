@@ -1,5 +1,5 @@
 from MRQservices.dispatch.service import CreateService,run
-
+#SETTINGS_MODULE
 class B(CreateService):
     service = 'api'
 

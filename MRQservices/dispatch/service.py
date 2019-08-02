@@ -9,6 +9,7 @@ class CreateService(ServiceBase):
     def __init__(self,*args,**kwargs):
         super(CreateService,self).__init__(*args,**kwargs)
 
+
     # Потверждаем о успешном получении(basic_ack) и возвращаем тело сообщения
     def context(self,ch, method, properties, body):
         body = body.decode('utf-8')

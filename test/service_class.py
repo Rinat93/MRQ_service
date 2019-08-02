@@ -1,4 +1,4 @@
-from dispatch.service import ServiceBase
+from MRQservices.dispatch.service import ServiceBase
 import unittest
 
 class TestStringMethods(unittest.TestCase):
