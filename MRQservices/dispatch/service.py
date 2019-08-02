@@ -1,8 +1,8 @@
 import json
 import re
-from MRQservices.dispatch.base.base_service import ServiceBase
+from .publicher import *
 
-class CreateService(ServiceBase):
+class CreateService(Publisher):
     __run__ = False
     __service__ = 'sad'
 

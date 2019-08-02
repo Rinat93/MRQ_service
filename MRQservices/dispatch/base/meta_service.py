@@ -24,7 +24,7 @@ LOGGER = logging.getLogger(__name__)
     exchange - Имя точки обмена
 '''
 class ServiceMeta(type):
-
+    __service__ = ''
     def __new__(cls, name, bases, nmspc):
         nmspc['__call__'] = cls.__call__
 
@@ -32,7 +32,7 @@ class ServiceMeta(type):
         if (not 'service' in nmspc and not '__service__' in nmspc):
             raise Exception('Not name service!')
 
-        if (not 'context' in nmspc):
+        if (not 'context' in nmspc and not '__service__' in nmspc):
             raise Exception('Not context service')
 
         return super().__new__(cls, name, bases, nmspc)
@@ -44,11 +44,64 @@ class ServiceMeta(type):
 
         if hasattr(cls, 'service'):
             cls.registry.add(cls)
-        return super().__init__(*args,**kwargs)
 
     def __call__(self, *args, **kwargs):
         call = super().__call__(*args, **kwargs)
-        self.__register_service__(self,call)
+        if hasattr(self,'_register_service'):
+            self._register_service(self,call)
         return call
 
+
+# Общий объект для объеденения некоторых методов которые присущи как слушателям так и отправителям
+class Service(metaclass=ServiceMeta):
+    __service__ = 'meta'
+    hosts = settings['server']
+    exchange = settings['exchange']
+    register_servce_info = []  # Зарегистрированные сервисы
+    _settings = os.environ.get('SETTINGS_MODULE', None)
+    _regisers = settings["REGISTER"]
+    _service_host = settings['service_host']
+    DEBUG = False
+
+    def __new__(cls, *args, **kwargs):
+        if cls._settings:
+            settings = importlib.import_module(cls._settings)
+            cls.settings_customs(cls, settings)
+
+        return super().__new__(cls)
+
+    # Если есть enviromen SETTINGS_MODULE тогда кастомизируем настройки
+    def settings_customs(cls, settings):
+        if hasattr(settings, 'HOST_RABBITMQ'):
+            cls.hosts = settings.HOST_RABBITMQ
+        if hasattr(settings, 'EXCHANGE'):
+            cls.exchange = settings.EXCHANGE
+        if hasattr(settings, 'HOST_SERVICE'):
+            cls.__service_host = settings.HOST_SERVICE
+        if hasattr(settings, 'SERVICE_NAME'):
+            cls._regisers['SERVICE'] = settings.SERVICE_NAME
+        if hasattr(settings, 'SERVICE_KEY'):
+            cls._regisers['KEY'] = settings.SERVICE_KEY
+        if hasattr(settings, 'DEBUG'):
+            cls.DEBUG = settings.DEBUG
+
+        if cls.DEBUG:
+            logging.basicConfig(level=logging.ERROR, format=LOG_FORMAT,
+                                filename='log/error_' + cls._regisers['SERVICE'] + '.log', filemode='w+')
+            logging.basicConfig(level=logging.CRITICAL, format=LOG_FORMAT,
+                                filename='log/critical_' + cls._regisers['SERVICE'] + '.log', filemode='w+')
+            logging.basicConfig(level=logging.FATAL, format=LOG_FORMAT,
+                                filename='log/error_' + cls._regisers['SERVICE'] + '.log', filemode='w+')
+
+    # Отправка сообщении в другие сервисы
+    def send_message(cls, body, route, exchange=''):
+        print(cls.hosts)
+        SendMessages(cls.hosts).send(route, body, exchange=cls.exchange, exchange_type='topic')
+
+    # Сериализация json данных
+    def json_serialize(self, body):
+        return re.search(r"^{.*}|^\[.*\]", body)
+
+    def context(self, *args, **kwargs):
+        pass
 
