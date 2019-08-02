@@ -291,7 +291,7 @@ class MicroRq(object):
         LOGGER.info('Closing the channel')
         self._channel.close()
 
-    def run(self,callback,route,queue,exh_type='topic'):
+    def run(self,callback,route,queue,exh_type='direct'):
         """Запуск потребителя
         """
         self.EXCHANGE_TYPE = exh_type

@@ -62,17 +62,30 @@ class ServiceBase(metaclass=ServiceMeta):
     # Вывод всех сервисов(регистрирует новые сервисы в других сервисах)
     def __systems_all(cls, ch, method, properties, body):
         body = json.loads(body)
-        print(f"Зарегистрирован сервис: {body}")
-        cls.send_message(cls.__regisers__, cls.__service_host)
-        if body['KEY'] == cls.__regisers__["KEY"]:
-            ch.basic_ack(delivery_tag=method.delivery_tag)
+        print("AUTH-----")
+        print(body)
+        print("AUTH.")
+        if body not in cls.register_servce_info:
+            print(f"Зарегистрирован сервис: {body}")
+            cls.send_message(cls.__regisers__, cls.__service_host)
+            if body['KEY'] == cls.__regisers__["KEY"]:
+                ch.basic_ack(delivery_tag=method.delivery_tag)
+            else:
+                ch.basic_cancel(delivery_tag=method.delivery_tag)
+            cls.register_servce_info.append(body)
         else:
-            ch.basic_cancel(delivery_tag=method.delivery_tag)
+            print("Уже зарегистрирован")
 
+    # Создание каналов
+    @staticmethod
+    def _create_channels(hosts,exchange,callback,host_service,exh_type,queue=''):
+        Thread(target=MicroRq(hosts, exchange).run,
+               args=(callback, host_service,queue),kwargs={'exh_type':exh_type}).start()
+
+    # Отправка сообщении для регистрации сервиса
     def _send_register_Service(cls):
         if cls.__global_service_start == False:
-            Thread(target=MicroRq(cls.hosts, cls.exchange).run,
-                   args=(cls.__systems_all, cls.__service_host, '')).start()
+            cls._create_channels(cls.hosts,cls.exchange,cls.__systems_all,cls.__service_host,'topic')
             cls.send_message(cls.__regisers__,cls.__service_host)
             cls.__global_service_start = True
 
@@ -80,7 +93,8 @@ class ServiceBase(metaclass=ServiceMeta):
     def __register_service__(cls, obj):
         if hasattr(obj, 'service') and obj.service_start == False:
             obj.service_start = True
-            Thread(target=MicroRq(obj.hosts, obj.exchange).run, args=(obj.context, obj.service, '')).start()
+            cls._create_channels(obj.hosts, obj.exchange,obj.context, obj.service,'topic')
+            # Thread(target=MicroRq(obj.hosts, obj.exchange).run, args=(obj.context, obj.service, '')).start()
 
     def context(self, *args, **kwargs): pass
 
