@@ -1,15 +1,10 @@
-# import log
-
-from MRQservices.core.core_client import SendMessages
 from MRQservices.settings.config import *
-from MRQservices.core import MicroRq
-from threading import Thread
 import importlib
 import os
 import re
-import json
 import logging
-
+from MRQservices.core.aio_pika.aio_server import Base
+import asyncio
 LOG_FORMAT = ('%(levelname) -10s %(asctime)s %(name) -30s %(funcName) '
               '-35s %(lineno) -5d: %(message)s')
 LOGGER = logging.getLogger(__name__)
@@ -41,15 +36,16 @@ class ServiceMeta(type):
 
         if not hasattr(cls, 'registry'):
             cls.registry = set()
-
+        # Добавляем все сервисы
         if hasattr(cls, 'service'):
             cls.registry.add(cls)
 
-    def __call__(self, *args, **kwargs):
-        call = super().__call__(*args, **kwargs)
-        if hasattr(self,'_register_service'):
-            self._register_service(self,call)
-        return call
+    # def __call__(self, *args, **kwargs):
+    #     call = super().__call__(*args, **kwargs)
+    #     if hasattr(self,'_register_service'):
+    #         print(self)
+    #         asyncio.run(self._register_service(self,call))
+    #     return call
 
 
 # Общий объект для объеденения некоторых методов которые присущи как слушателям так и отправителям
@@ -94,12 +90,16 @@ class Service(metaclass=ServiceMeta):
                                 filename='log/error_' + cls._registers['SERVICE'] + '.log', filemode='w+')
 
     # Отправка сообщении в другие сервисы
-    def send_message(cls, body, route, exchange=''):
-        print(cls.exchange,route)
-        SendMessages(cls.hosts).send(route, body, exchange=cls.exchange, exchange_type='topic')
+    async def send_message(cls, body, route, exchange_type='topic'):
+        mess = Base()
+        mess.ROUTING_KEY = route
+        mess.EXCHANGE = cls.exchange
+        mess.EXCHANGE_TYPE = exchange_type
+        await mess.run_publisher(body)
+        # SendMessages(cls.hosts).send(route, body, exchange=cls.exchange, exchange_type='topic')
 
     # Сериализация json данных
-    def json_serialize(self, body):
+    async def json_serialize(self, body):
         return re.search(r"^{.*}|^\[.*\]", body)
 
     def context(self, *args, **kwargs):

@@ -3,11 +3,11 @@ import json
 '''
     Декоратор для логирования основы сервисов
 '''
-def loggigs_service(func):
+async def loggigs_service(func):
 
-    def writes(*args,**kwargs):
-        services = json.loads(args[-1].decode('utf-8'))
-        obj = args[0]._registers
+    async def writes(ctx):
+        services = json.loads(ctx.body.decode('utf-8'))
+        obj = services._registers
         data = [services,obj]
         if not os.path.isdir('log'):
             os.makedirs('log')
@@ -21,5 +21,5 @@ def loggigs_service(func):
             json.dump(data,f)
 
 
-        return func(*args,**kwargs)
+        await func(ctx)
     return writes

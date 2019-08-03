@@ -214,8 +214,6 @@ class SendMessages(object):
         """ Возвращаем ответ от канала кому отправили
         :param pika.frame.Method method_frame: Basic.Ack or Basic.Nack frame
         """
-        print("Ответ")
-        print(method_frame)
         confirmation_type = method_frame.method.NAME.split('.')[1].lower()
         LOGGER.info('Received %s for delivery tag: %i', confirmation_type,
                     method_frame.method.delivery_tag)

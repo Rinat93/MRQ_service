@@ -1,8 +1,7 @@
 import os
 import argparse
-import importlib
-from setuptools import Command
-from MRQservices.core.core_client import SendMessages
+import asyncio
+from MRQservices.core.aio_pika.aio_server import Base
 
 
 class BaseCommand:
@@ -22,10 +21,15 @@ class BaseCommand:
         parser.add_argument('--exchange_type', metavar='Exchange type', help='Название типа маршрута', default='topic')
         args = parser.parse_args()
         if args.body:
-            self.sendMessage(args.host,args.route,args.body,args.exchange,args.exchange_type)
+            asyncio.run(self.sendMessage(args.host,args.route,args.body,args.exchange,args.exchange_type))
 
-    def sendMessage(self,host,route,body,exchange,exchange_type):
-        SendMessages(host).send(route, body, exchange=exchange, exchange_type=exchange_type)
+    async def sendMessage(self,host,route,body,exchange,exchange_type):
+        mess = Base()
+        mess.RABBITMQ = host
+        mess.ROUTING_KEY = route
+        mess.EXCHANGE = exchange
+        mess.EXCHANGE_TYPE = exchange_type
+        await mess.run_publisher(body)
 
     def handle(self, *args,**kwargs):
         if not self.name_services:
