@@ -8,7 +8,7 @@ long_description = ('Обертка поверх Piki для построени�
 
 setuptools.setup(
     name='MRQservice',
-    version='1.1.0',
+    version='0.2',
     description='MRQservice - create micro-services',
     # long_description=open('README.rst').read(),
     maintainer='Zakirjanov Rinat M.',
@@ -18,7 +18,6 @@ setuptools.setup(
     scripts=['MRQservices/bin/RMQ.py',],
     entry_points={'console_scripts': [
         'rmq = MRQservices.core.management.base:BaseCommand',
-        'test = MRQservices.test.test_base:TestBase',
     ]},
     license='BSD',
     install_requires= open('./req.txt').read(),

@@ -1,12 +1,8 @@
 import MRQservices.log as log
-from MRQservices.core import MicroRq,BlocRq
-from MRQservices.settings.config import *
-import asyncio
+from MRQservices.core.aio_pika.aio_server import Base
+from MRQservices.settings import config
 from threading import Thread
-from functools import wraps
-# micro = MicroRq(settings['server'],settings['exchange'])
-# Servers = BlocRq(settings['server'])
-Exchange = EXCHANGE
+import asyncio
 
 class Microservise(object):
 
@@ -16,9 +12,11 @@ class Microservise(object):
         self.route = kwargs.get('route')
 
     def create_microservice(self,func,route):
-        MicroRq(RABBITMQ, EXCHANGE).run(func,route or func.__name__,'')
-        # BlocRq(settings['server']).subscribe(Exchange,func,routing_key=route or func.__name__,exchange_type='topic')
-    #
+        mess = Base()
+        mess.ROUTING_KEY = route
+        mess.EXCHANGE_TYPE = 'topic'
+        mess.EXCHANGE = config.EXCHANGE
+        asyncio.run(mess.run_consumer(func))
 
     def __call__(self,*args,**kwargs):
         funct = None

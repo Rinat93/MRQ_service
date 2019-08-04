@@ -1,26 +1,30 @@
 from MRQservices.decoratos.create_microservice import log,Microservise
+from MRQservices.dispatch.service import run
+from MRQservices.dispatch.service import Service
 # import asyncio
 # import asyncore
 
 
 
 @Microservise()
-def rests(ch, method, properties, body):
-    log.log(body=body,file='rests.txt')
-    ch.basic_ack(delivery_tag = method.delivery_tag)
+async def rests(ctx):
+    print(1)
+    print(ctx.body)
 #
 @Microservise(route='api2')
-def asa(ch, method, properties, body):
-    log.log(body=body,file='api2.txt')
-    ch.basic_ack(delivery_tag=method.delivery_tag)
-    ch.basic_consume()
-    return 'Ну привет друг'
+async def asa(ctx):
+    print(2)
+    print(ctx.body)
+    # log.log(body=ctx.body,file='api2.txt')
+    # return 'Ну привет друг'
 
 @Microservise(route='api')
-def callback(ch, method, properties, body):
-    log.log(body=body,file='api.txt')
-    ch.basic_ack(delivery_tag = method.delivery_tag)
+async def callback(ctx):
+    print(3)
+    print(ctx.body)
 
+if __name__ == '__main__':
+    run()
 # async def run_all():
 #     a(name="Хай")
 #     asa(name="Хай 2")
