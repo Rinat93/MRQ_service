@@ -12,23 +12,15 @@ class TestBase(object):
         # sys.exit()
 
     async def send_message(cls, body, route, exchange=''):
-        mess = Base()
-        mess.ROUTING_KEY = route
-        mess.EXCHANGE = exchange
+        mess = Base(config.RABBITMQ,route,exchange,'direct')
         await mess.run_publisher(body)
 
     def run_consumer(cls):
-        mess = Base()
-        mess.ROUTING_KEY = config.SERVICE_HOST
-        mess.EXCHANGE_TYPE = 'direct'
-        mess.EXCHANGE = config.EXCHANGE
+        mess = Base(config.RABBITMQ,config.SERVICE_HOST,config.EXCHANGE,'direct',queue='')
         asyncio.run(mess.run_consumer(cls.points))
 
     async def register_Service(cls,loop):
-        mess = Base()
-        mess.ROUTING_KEY = config.SERVICE_HOST
-        mess.EXCHANGE_TYPE = 'direct'
-        mess.EXCHANGE = config.EXCHANGE
+        mess = Base(config.RABBITMQ,config.SERVICE_HOST,config.EXCHANGE,'direct',queue='')
         await mess.run_consumer(cls.points,loop)
         print('Тут')
 
@@ -48,13 +40,7 @@ class TestBase(object):
         loop.close()
 
     def setup(cls):
-        loop = asyncio.get_event_loop()
-        gr = asyncio.gather(
-            cls.register_Service(loop),
-            cls.send(loop)
-        )
-        loop.run_until_complete(gr)
-        loop.close()
+        pass
         # asyncio.run()
 
 # print('тут')

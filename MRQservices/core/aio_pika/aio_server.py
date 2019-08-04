@@ -7,6 +7,13 @@ class Base(object):
     ROUTING_KEY = 'example.text'
     RABBITMQ = "amqp://guest:guest@127.0.0.1/"
 
+    def __init__(self,host,route,exchange,exchange_type,queue=''):
+        self.RABBITMQ = host
+        self.ROUTING_KEY = route
+        self.EXCHANGE = exchange
+        self.EXCHANGE_TYPE = exchange_type
+        self.QUEUE = queue
+
     async def connect(self,loop=None):
         connection = await aio_pika.connect_robust(
             self.RABBITMQ,

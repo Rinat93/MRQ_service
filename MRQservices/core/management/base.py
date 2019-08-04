@@ -24,11 +24,7 @@ class BaseCommand:
             asyncio.run(self.sendMessage(args.host,args.route,args.body,args.exchange,args.exchange_type))
 
     async def sendMessage(self,host,route,body,exchange,exchange_type):
-        mess = Base()
-        mess.RABBITMQ = host
-        mess.ROUTING_KEY = route
-        mess.EXCHANGE = exchange
-        mess.EXCHANGE_TYPE = exchange_type
+        mess = Base(host,route,exchange,exchange_type)
         await mess.run_publisher(body)
 
     def handle(self, *args,**kwargs):

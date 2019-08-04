@@ -91,10 +91,7 @@ class Service(metaclass=ServiceMeta):
 
     # Отправка сообщении в другие сервисы
     async def send_message(cls, body, route, exchange_type='topic'):
-        mess = Base()
-        mess.ROUTING_KEY = route
-        mess.EXCHANGE = cls.exchange
-        mess.EXCHANGE_TYPE = exchange_type
+        mess = Base(cls.hosts,route,cls.exchange,exchange_type,queue='')
         await mess.run_publisher(body)
         # SendMessages(cls.hosts).send(route, body, exchange=cls.exchange, exchange_type='topic')
 

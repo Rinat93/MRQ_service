@@ -27,12 +27,7 @@ class Consumer(Service):
 
     # Регистрация слушателей
     def __register_consumer(self,hosts,exchange,type_exh,route,queue,callback):
-        mess = Base()
-        mess.hosts = hosts
-        mess.ROUTING_KEY = route
-        mess.EXCHANGE_TYPE = type_exh
-        mess.EXCHANGE = exchange
-        mess.QUEUE = queue
+        mess = Base(hosts,route,exchange,type_exh,queue=queue)
         asyncio.run(mess.run_consumer(callback))
 
     # Вывод всех сервисов(регистрирует новые сервисы в других сервисах)
