@@ -21,6 +21,9 @@ class Base(object):
         )
         return connection
 
+    def connection(self,connection):
+        connection.close()
+
     # Настройка канала
     async def channel_settings(self,client):
         channel = await client.channel()
@@ -39,11 +42,6 @@ class Base(object):
         async with connection:
             # Creating channel
             queue,channel = await self.channel_settings(connection)
-
-            # Declaring queue
-            # queue = await channel.declare_queue(
-            #     self.QUEUE, auto_delete=True,durable=True
-            # )
             async with queue.iterator() as queue_iter:
                 async for message in queue_iter:
                     async with message.process():

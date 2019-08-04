@@ -5,15 +5,17 @@ import pytest
 import json
 import sys
 
+mess = Base(config.RABBITMQ,config.SERVICE_HOST,config.EXCHANGE,'direct',queue='')
 class TestBase(object):
     register_servce_info = []
 
-    async def points(cls, body):
-        res = json.loads(body.body.decode())
+    async def points(cls, ctx):
+        res = json.loads(ctx.body.decode())
         assert res == {
             'TEST': True
         }
-        sys.exit()
+        print(ctx)
+        # ctx.conn.close()
 
     async def send_message(cls, body, route, exchange=''):
         mess = Base(config.RABBITMQ,route,exchange,'direct')
@@ -24,7 +26,6 @@ class TestBase(object):
         asyncio.run(mess.run_consumer(cls.points))
 
     async def register_Service(cls,loop):
-        mess = Base(config.RABBITMQ,config.SERVICE_HOST,config.EXCHANGE,'direct',queue='')
         await mess.run_consumer(cls.points,loop)
 
     async def send(cls,loop):
