@@ -2,14 +2,18 @@ import asyncio
 from MRQservices.core.aio_pika.aio_server import Base
 from MRQservices.settings.test_settings import *
 import pytest
+import json
+import sys
 
 class TestBase(object):
     register_servce_info = []
 
     async def points(cls, body):
-        print("Тута")
-        print(body)
-        # sys.exit()
+        res = json.loads(body.body.decode())
+        assert res == {
+            'TEST': True
+        }
+        sys.exit()
 
     async def send_message(cls, body, route, exchange=''):
         mess = Base(config.RABBITMQ,route,exchange,'direct')
@@ -22,10 +26,8 @@ class TestBase(object):
     async def register_Service(cls,loop):
         mess = Base(config.RABBITMQ,config.SERVICE_HOST,config.EXCHANGE,'direct',queue='')
         await mess.run_consumer(cls.points,loop)
-        print('Тут')
 
     async def send(cls,loop):
-        # Thread(target=cls.run_consumer,args=()).start()
         await cls.send_message({
             'TEST': True
         },config.SERVICE_HOST,loop)

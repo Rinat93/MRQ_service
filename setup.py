@@ -23,7 +23,10 @@ setuptools.setup(
     install_requires= open('./req.txt').read(),
     # package_data={'': ['LICENSE', 'README.rst']},
     extras_require={
-        'pika': ['pika']
+        'pika': ['pika'],
+        "dev": [
+            'pytest',
+        ]
     },
     classifiers=[
         'Development Status :: 5 - Production/Stable',
