@@ -9,6 +9,11 @@
     HOST_SERVICE = 'HOST.EXAMPLE'
     SERVICE_NAME = 'NAME_EXAMPLE'
     SERVICE_KEY = 'KEY_EXAMPLE'
+    
+    либо изменение параметров "напрямую"
+    from MRQservices.settings import config
+    config.HOST_RABBITMQ = ***
+    ... etc.
 
 ## Примеры
     Пример реализации микросервиса
@@ -27,7 +32,7 @@
             body - сообщение(либо json либо text)
         '''
         
-        def context(self,*args,**kwargs):
+        async def context(self,*args,**kwargs):
             context = super(EXAMPLE,self).context(*args,**kwargs)
     
     if __name__ == '__main__':

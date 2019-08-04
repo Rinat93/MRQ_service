@@ -53,7 +53,6 @@ class Base(object):
                 body = json.dumps(body, ensure_ascii=False).encode()
             else:
                 body = body.encode()
-            print(body)
             await channel.publish(
                 aio_pika.Message(
                     body=body,
