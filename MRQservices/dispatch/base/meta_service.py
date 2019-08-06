@@ -53,10 +53,11 @@ class Service(metaclass=ServiceMeta):
     __service__ = 'meta'
     hosts = RABBITMQ
     exchange = EXCHANGE
+    exchange_type = EXCHANGE_TYPE
     register_servce_info = []  # Зарегистрированные сервисы
     _settings = os.environ.get('SETTINGS_MODULE', None)
     _registers = REGISTER
-    _service_host = SERVICE_HOST
+    _route = ROUTE
     DEBUG = False
 
     def __new__(cls, *args, **kwargs):
@@ -73,7 +74,7 @@ class Service(metaclass=ServiceMeta):
         if hasattr(settings, 'EXCHANGE'):
             cls.exchange = settings.EXCHANGE
         if hasattr(settings, 'HOST_SERVICE'):
-            cls.__service_host = settings.HOST_SERVICE
+            cls.__service_host = settings.SERVICE_HOST
         if hasattr(settings, 'SERVICE_NAME'):
             cls._registers['SERVICE'] = settings.SERVICE_NAME
         if hasattr(settings, 'SERVICE_KEY'):

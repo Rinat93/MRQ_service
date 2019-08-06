@@ -37,7 +37,7 @@ class Consumer(Service):
         body = json.loads(body)
         if body not in cls.register_servce_info:
             print(f"Зарегистрирован сервис: {body}")
-            await cls.send_message(cls._registers, cls._service_host)
+            await cls.send_message(cls._registers, cls._route)
             await cls.send_message({'test':'sdad'}, 'api')
             # ch.basic_ack(delivery_tag=method.delivery_tag)
             # else:
